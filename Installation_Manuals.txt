@@ -1,0 +1,14 @@
+Install Root CA OpenSSL:
+https://jamielinux.com/docs/openssl-certificate-authority/introduction.html
+
+install OpenLDAP server:
+https://help.ubuntu.com/lts/serverguide/openldap-server.html.en
+
+Install Samba:
+https://help.ubuntu.com/lts/serverguide/samba-ldap.html
+
+Plexim License Server on Linux:
+https://www.plexim.com/dstlm/linux-setup
+
+install root certificate all OSs:
+https://www.bounca.org/tutorials/install_root_certificate.html

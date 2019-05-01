@@ -1,0 +1,59 @@
+# Samba installation:
+
+#set static IP and add it to HOSTS file
+
+#Install packeges:
+sudo apt-get install -y samba attr winbind libpam-winbind libnss-winbind libpam-krb5 krb5-config krb5-user
+#sudo apt-get install -y acl attr autoconf bison build-essential debhelper dnsutils docbook-xml docbook-xsl flex gdb libjansson-dev krb5-user libacl1-dev libaio-dev libarchive-dev libattr1-dev libblkid-dev libbsd-dev libcap-dev libcups2-dev libgnutls28-dev libgpgme-dev libjson-perl libldap2-dev libncurses5-dev libpam0g-dev libparse-yapp-perl libpopt-dev libreadline-dev nettle-dev perl perl-modules-5.26 pkg-config python-all-dev python-crypto python-dbg python-dev python-dnspython python3-dnspython python-gpg python3-gpg python-markdown python3-markdown python3-dev xsltproc zlib1g-dev liblmdb-dev lmdb-utils libsystemd-dev
+
+# un mask samba-ad-dc service:
+sudo systemctl unmask samba-ad-dc
+
+# stop all samba and systemd-resolved services:
+sudo systemctl stop samba-ad-dc smbd nmbd systemd-resolved
+sudo systemctl disable samba-ad-dc smbd nmbd
+
+# backup original smb.conf file:
+sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.org
+
+# provision samba domain:
+sudo samba-tool domain provision --use-rfc2307 --interactive
+
+#replace resolv.conf file:
+sudo rm /etc/resolv.conf
+sudo vi /etc/resolv.conf
+ #paste:
+search oryxvision.com
+nameserver 10.99.20.5
+
+#backup and replace /etc/krb5.conf file:
+sudo mv /etc/krb5.conf /etc/krb5.conf.orig
+sudo vi /etc/krb5.conf
+ #paste:
+[libdefaults]
+        default_realm = ORYXVISION.COM
+        dns_lookup_realm = true
+        dns_lookup_kdc = true
+
+[realms]
+    ORYXVISION.COM = {
+        kdc = samba-dc1.oryxvision.com
+        #You can have more than one kds, just keep adding more kdc =
+        #entries
+        #kdc = dsN.domain.com:88
+        #Uncomment if you have a krb admin server
+        #admin_server = ds.domain.com:749
+        default_domain = oryxvision.com
+    }
+
+[domain_realm]
+    .domain.com = ORYXVISION.COM
+    domain.com = ORYXVISION.COM
+
+
+# start and enable sambe-ad-dc service
+sudo systemctl start samba-ad-dc
+sudo systemctl enable samba-ad-dc
+
+#set reverse dns zone:
+sudo samba-tool dns zonecreate 10.99.20.5 20.99.10.in-addr.arpa -U administrator

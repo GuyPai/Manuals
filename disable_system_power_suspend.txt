@@ -1,0 +1,7 @@
+# disable power system suspend:
+
+sudo su
+su lightdm -s /bin/bash
+dbus-launch gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 0
+exit
+exit
