@@ -1,6 +1,5 @@
-
+### Ubuntu: ###
 # gnome:
-
 sudo apt install -y xrdp gnome-tweak-tool gnome-icon-theme tango-icon-theme
 
 sudo sed -e 's/^new_cursors=true/new_cursors=false/g' -i /etc/xrdp/xrdp.ini
@@ -40,6 +39,7 @@ echo "lxsession -s Lubuntu -e LXDE" > ~/.xsession
 echo "lxsession -s LXDE -e LXDE" >~/.xsession
 
 sudo cp /usr/bin/light-locker /usr/bin/light-locker.orig
+
 cat <<EOF | sudo tee /usr/bin/light-locker
 #!/bin/sh
 
@@ -54,3 +54,22 @@ EOF
 sudo chmod a+x /usr/bin/light-locker
 
 
+### CentOS 07: ###
+
+# Install GUI:
+yum groupinstall "GNOME Desktop" "Graphical Administration Tools"
+
+# Add EPEL repository:
+rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+# Install XRDP:
+yum -y install xrdp tigervnc-server
+
+systemctl start xrdp
+systemctl enable xrdp
+
+firewall-cmd --permanent --add-port=3389/tcp
+firewall-cmd --reload
+
+chcon --type=bin_t /usr/sbin/xrdp
+chcon --type=bin_t /usr/sbin/xrdp-sesman
