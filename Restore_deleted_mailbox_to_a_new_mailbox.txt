@@ -1,0 +1,9 @@
+
+# Get deleted mailbox ExchangeGuid:
+Get-Mailbox -SoftDeletedMailbox | Select-Object Name,ExchangeGuid
+
+# Get new mailbox ExchangeGuid:
+Get-Mailbox -Identity alexl@oryxvision.com | Format-List ExchangeGuid
+
+# Restore old mailbox to new one:
+New-MailboxRestoreRequest -SourceMailbox 3930b104-b35e-48b6-bd37-363b90110169 -TargetMailbox b489cda6-5ce6-456d-9491-ecc19363cfdd -AllowLegacyDNMismatch

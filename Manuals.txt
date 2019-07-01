@@ -1,0 +1,2 @@
+# Configure x11vnc to boot at startup:
+https://c-nergy.be/blog/?p=12220
